@@ -1,0 +1,4 @@
+cron:
+- description: Calls cronjob for GSC polling daily
+  url: /cron/
+  schedule: every 24 hours

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<title>GSC Logger Home</title>
+    <!-- [START css] -->
+    <link type="text/css" rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <!-- [END css] -->
+    <style type="text/css">
+      body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
+      }
+      .row {
+        margin-left: 0px;
+        padding: 20px;
+      }
+    </style>    
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+      </div>
+    </div>
+    <div class="container">
+      <!-- [START Email] -->
+      <div class="row">
+	  	{% if message %}
+	  		<h2>GSC Logger Active</h2>
+	    	<p>{{ message|safe }}</p>
+	    {% endif %}
+      </div>
+      <!-- [END Email] -->
+      <div class="row">
+      	<h2>Sites Connected</h2>
+      	<ul>
+      	{% for site in sites %}
+       		<li>{{ site }}</li>
+      	{% endfor %}
+      	</ul>
+      	<p>View table data in <a href='https://bigquery.cloud.google.com' target='_blank'>BigQuery</a></p>
+      </div>
+      <div class="row">
+      	<h2>Reset Database</h2>
+      	<p style='color:red;'>Warning: This is not reversible and no verification prompt given.</p>
+      	<button onclick="window.location.href='/?reset=1'" >Reset Database</button>
+      </div>
+    </div>
+    <!-- [START js] -->
+    <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="/assets/js/bootstrap.js"></script>
+    <!-- [END css] -->
+  </body>
+</html>

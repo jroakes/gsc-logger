@@ -1,0 +1,3 @@
+appengine/lib/**
+appengine/credentials/credentials_service.json
+*.pyc
