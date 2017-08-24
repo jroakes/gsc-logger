@@ -1,12 +1,12 @@
-# GSC Logger: A Tool To Log GSC Data to BigQuery
-Google App Engine provides a Cron service for logging daily Google Search Console (GSC) data to BigQuery for use in
+# GSC Logger: A Tool To Log Google Search Console Data to BigQuery
+Google App Engine provides a Cron service for logging daily Google Search Console(GSC): Search Analytics data to BigQuery for use in
 Google Data Studio or for separate analysis beyond 3 months.
 
 ## Configuration
 
 This script runs daily and pulls data as specified in config.py file to BigQuery.  There is little to configure without some programming experience.  
 Generally, this script is designed to be a set-it-and-forget-it in that once deployed to app engine, you should be able to add your service account
-email as a full user to any GSC project and the data will be logged daily to BigQuery.  By default the data is set to pull from GSC 7 days earler every day 
+email as a full user to any GSC project and the Search Analytics data will be logged daily to BigQuery.  By default the data is set to pull from GSC 7 days earler every day 
 to ensure the data is available.
 
 * **Note: This script should be deployed on the Google Account with access to your GSC data to ensure it is available to Google Data Studio**
