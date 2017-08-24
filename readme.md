@@ -9,8 +9,9 @@ Generally, this script is designed to be a set-it-and-forget-it in that once dep
 email as a full user to any GSC project and the data will be logged daily to BigQuery.  By default the data is set to pull from GSC 7 days earler every day 
 to ensure the data is available.
 
-** Note: This script should be deployed on the Google Account with access to your GSC data to ensure it is available to Google Data Studio **
-** Note: This script only works for Python 2.7 which is a restriction for GAE currently **
+**Note: This script should be deployed on the Google Account with access to your GSC data to ensure it is available to Google Data Studio**
+**Note: This script has not been widely tested and is considered a POC.  Use at your own risk!!!
+**Note: This script only works for Python 2.7 which is a restriction for GAE currently**
 
 ## Deploying
 The overview for configuring and running this sample is as follows:
@@ -35,7 +36,7 @@ The overview for configuring and running this sample is as follows:
 
 To clone the GitHub repository to your computer, run the following command:
 
-    $ git clone https://github.com/jroakes/gsc-logger/
+    $ git clone https://github.com/jroakes/gsc-logger.git
 
 Change directories to the `gsc-logger` directory. The exact path
 depends on where you placed the directory when you cloned the sample files from
@@ -71,14 +72,12 @@ $ gcloud app create
 ```
 5. Deploy the application to App Engine.
 ```
-$ gcloud app deploy app.yaml \cron.yaml
+$ gcloud app deploy app.yaml \cron.yaml \index.yaml
 ```
-6. Open [Google Cloud Logging](https://console.cloud.google.com/logs/viewer) and in the right dropdown select "GAE Application". If you don't see this option, it may mean that App Engine is still in the process of deploying.
-7. Look for a log entry calling `/_ah/start`. If this entry isn't an error, then you're done deploying the App Engine app.
 
-### 4. Verify your Cron Jobs
-We can verify that our function is wired up correctly by opening the [Task Queue](https://console.cloud.google.com/appengine/taskqueues) tab in AppEngine and
-clicking on **Cron Jobs**. Each of these jobs has a **Run Now** button next to it.
+### 4. Verify your Cron Job
+Go to the [Task Queue](https://console.cloud.google.com/appengine/taskqueues) tab in AppEngine and
+click on **Cron Jobs** to verify that the daily cron is set up correctly. The job should have a **Run Now** button next to it.
 
 ### 4. Verify App
 Once deployed, you should be able to load your GAE deployment url in a browser and see a screen that lists your service account email and also attached GSC sites.  This screen will also list the last cron save date for each site
