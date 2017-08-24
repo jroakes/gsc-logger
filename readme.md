@@ -9,9 +9,9 @@ Generally, this script is designed to be a set-it-and-forget-it in that once dep
 email as a full user to any GSC project and the data will be logged daily to BigQuery.  By default the data is set to pull from GSC 7 days earler every day 
 to ensure the data is available.
 
-**Note: This script should be deployed on the Google Account with access to your GSC data to ensure it is available to Google Data Studio**
-**Note: This script has not been widely tested and is considered a POC.  Use at your own risk!!!
-**Note: This script only works for Python 2.7 which is a restriction for GAE currently**
+* **Note: This script should be deployed on the Google Account with access to your GSC data to ensure it is available to Google Data Studio**
+* **Note: This script has not been widely tested and is considered a POC.  Use at your own risk!!!
+* **Note: This script only works for Python 2.7 which is a restriction for GAE currently**
 
 ## Deploying
 The overview for configuring and running this sample is as follows:
