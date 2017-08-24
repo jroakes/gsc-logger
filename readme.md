@@ -13,7 +13,7 @@ to ensure the data is available.
 * **Note: This script has not been widely tested and is considered a POC.  Use at your own risk!!!**
 * **Note: This script only works for Python 2.7 which is a restriction for GAE currently**
 
-More details located [here](https://adaptpartners.com/technical-seo/a-tool-for-saving-google-search-console-data-to-bigquery/)
+More installation details located [here](https://adaptpartners.com/technical-seo/a-tool-for-saving-google-search-console-data-to-bigquery/). 
 Developed by [Technical SEO Agency, Adapt Partners](https://adaptpartners.com)
 
 ## Deploying
