@@ -34,8 +34,7 @@ class MainHandler(BaseHandler):
     sitelist = []
 
     reset = self.request.get('reset','0')
-    print(reset)
-    
+        
     if reset == '1':
         db.delete_entries()
         message = "Cron database deleted. <a href='/'>Refresh page</a>."      
