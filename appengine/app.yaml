@@ -12,7 +12,9 @@ handlers:
   
 - url: /.*
   script: controllers.main.app
-
+  secure: always
+  login: admin
+  
 libraries:
 - name: webapp2
   version: latest
