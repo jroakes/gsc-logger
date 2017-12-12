@@ -46,8 +46,9 @@ def get_offset_date(days):
 
 # Return a list of unvisited dates for the specified site.
 def dates_list(site):
-    return (get_offset_date(days) for days in range(cfg.OFFSET_START_DATE, cfg.OFFSET_END_DATE) \
-           if get_offset_date(days) > db.last_date(site) or db.last_date(site) == 'Never')
+    return (get_offset_date(days) for days \
+            in reversed(range(cfg.OFFSET_START_DATE, cfg.OFFSET_END_DATE)) \
+            if get_offset_date(days) > db.last_date(site) or db.last_date(site) == 'Never')
 
 # Returns the GSC service
 def get_gsc_service():

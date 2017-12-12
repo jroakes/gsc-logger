@@ -47,7 +47,7 @@ class MainHandler(BaseHandler):
             message = "Add <strong>{0}</strong> to each Google Search Console account that you want to manage.".format(svcdata['client_email'])
             sites = gsc.list_sites()
             for site in sites:
-                sitelist.append(site + " (Last Save: " + db.last_date(site) + " — " + str(db.last_count(site)) + " rows)" )
+                sitelist.append(site + " (Last Save: " + db.last_date(site) + " --- " + str(db.last_count(site)) + " rows)" )
 
         except HttpError as e:
             log.error("GSC Error, {0} ".format(e.content))
