@@ -41,9 +41,13 @@ def rate_limit(max_per_minute):
     return decorate
 
 # Returns the GCS format date based on OFFSET_DATE specified in config.py
-def get_offset_date():
-    return (datetime.now(pytz.timezone(cfg.GSC_TIMEZONE)) - timedelta(days=cfg.OFFSET_DATE)).strftime("%Y-%m-%d")
+def get_offset_date(days):
+    return (datetime.now(pytz.timezone(cfg.GSC_TIMEZONE)) - timedelta(days=days)).strftime("%Y-%m-%d")
 
+# Return a list of unvisited dates for the specified site.
+def dates_list(site):
+    return (get_offset_date(days) for days in range(cfg.OFFSET_START_DATE, cfg.OFFSET_END_DATE) \
+           if get_offset_date(days) > db.last_date(site) or db.last_date(site) == 'Never')
 
 # Returns the GSC service
 def get_gsc_service():
@@ -53,22 +57,21 @@ def get_gsc_service():
 
 # Lists all sites that are available to you based on your serice email address.
 def list_sites():
-    
+
     data = []
-    
+
     allowed = ['siteOwner','siteFullUser']
-    
-    service = get_gsc_service()   
+
+    service = get_gsc_service()
     site_list = service.sites().list().execute()
-    
+
     log.info(site_list)
     if site_list and 'siteEntry' in site_list:
         for site in site_list['siteEntry']:
             if site['permissionLevel'] in allowed:
                 data.append(site['siteUrl'])
-    
-    return data 
 
+    return data
 
 #Main request to GSC
 # Credit: https://github.com/stephan765/Google-Search-Console-bulk-query/blob/master/search_console_query.py
@@ -106,24 +109,18 @@ def execute_request(service, property_uri, request, max_retries=5, wait_interval
     return response
 
 # Given a site url string, loads all data for a particular date to BiqQuery
-def load_site_data(site):
-    
+def load_site_data(site, date):
+
     data = None
     loaded = False
-    
+
     query = cfg.GSC_QUERY
 
-    if db.last_date(site) == get_offset_date():
-        #Already loaded
-        log.info('Ignoring. Already run this day for site {0}.'.format(site))
-        return False
-        
-    query['startDate'] = get_offset_date()
-    query['endDate'] = get_offset_date()
-        
-    
+    query['startDate'] = date
+    query['endDate']   = date
+
     service = get_gsc_service()
-    
+
     while True:
 
         data = execute_request(service, site, query)
@@ -131,57 +128,59 @@ def load_site_data(site):
             rows = data['rows']
             numRows = len(rows)
             rowsSent = 0
-            
+
             try:
                 result = bigq.stream_row_to_bigquery(site, rows)
-                log.info('Added {0} rows to {1}'.format(numRows,site))
+                log.info('Added {0} rows to {1}'.format(numRows, site))
                 rowsSent += numRows
                 loaded = True
-                
+
                 if numRows == 5000:
                     query['startRow'] = int(rowsSent + 1)
                     continue
                 else:
                     if numRows and numRows > 0:
-                        db.add_entry(site, get_offset_date(),rowsSent)
+                        db.add_entry(site, date, rowsSent)
                     break
-                
+
             except HttpError as e:
-                log.error("Stream to Bigquery Error. ", e.content)
+                log.error("Stream to Bigquery error. ", e.content)
                 break
-        
+
         else:
             break
-        
+
+    if loaded:
+        log.info('Data loaded for date {0} and site {1}'.format(date, site))
+    else:
+        log.error('Could not load data for date {0} and site {1}'.format(date, site))
+
     return loaded
-        
+
 # Main Cron script.
 def run_gsc_cron():
-    
+
     sites = list_sites()
     error = False
     message = ""
-    
-    try: 
+
+    try:
         #Audit Sites
         audit = bigq.audit_tables(sites)
-        
+
         log.info('Tables Audited')
-        
+
         #load site data to BigQuery
         for site in sites:
-            loaded = load_site_data(site)
-            if loaded:
-                log.info('Site Data Loaded for {0}'.format(site))
-            else:
-                log.error('Could not load data for {0}'.format(site))
-                
+            for date in dates_list(site):
+
+                loaded = load_site_data(site, date)
+
         message = str(sites)
-                
+
     except HttpError as e:
         log.error("GSC Cron Error, {0}".format(e.content))
         message = "GSC Cron Error, {0}".format(e.content)
         error = True
-    
+
     return error, message
-        
