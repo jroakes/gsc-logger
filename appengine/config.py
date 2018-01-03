@@ -7,7 +7,7 @@ CREDENTIAL_SERVICE = "credentials/credentials_service.json"
 DEFAULT_SCOPES = ["https://www.googleapis.com/auth/bigquery", "https://www.googleapis.com/auth/webmasters.readonly"]
 
 # Unique ID for your dataset.
-DATASET_ID = 'gsc_logger_sites'
+DATASET_ID = 'google_search_console'
 
 # Since GCS data is dated, specify the offset from today.
 # Queried dates range from OFFSET_START_DATE to OFFSET_END_DATE.
@@ -46,7 +46,7 @@ ALLOW_OPEN_CRON = True
 HIDE_HOMEPAGE = False
 
 # Set Timezone ('US/Eastern', 'US/Central', 'US/Pacific')
-GSC_TIMEZONE = 'US/Eastern'
+GSC_TIMEZONE = 'UTC'
 
 # Base query for GSC.  startDate and endDate are replaced upon call.
 GSC_QUERY = {
@@ -58,16 +58,5 @@ GSC_QUERY = {
                   "page",
                   "device"
                  ],
-                 "dimensionFilterGroups": [
-                  {
-                   "filters": [
-                    {
-                     "dimension": "country",
-                     "expression": "usa"
-                    }
-                   ]
-                  }
-                 ],
                  "rowLimit": 5000
-                }
-
+            }
