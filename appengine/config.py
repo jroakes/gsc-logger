@@ -7,14 +7,18 @@ CREDENTIAL_SERVICE = "credentials/credentials_service.json"
 DEFAULT_SCOPES = ["https://www.googleapis.com/auth/bigquery", "https://www.googleapis.com/auth/webmasters.readonly"]
 
 # Unique ID for your dataset.
-DATASET_ID = 'gsc_logger_sites'
+DATASET_ID = 'google_search_console'
 
 # Since GCS data is dated, specify the offset from today.
-OFFSET_DATE = 7
+# Queried dates range from OFFSET_START_DATE to OFFSET_END_DATE.
+# Only posterior dates to the last save date are considered.
+# GSC does not hold log data beyond 90 days.
+OFFSET_START_DATE =  7
+OFFSET_END_DATE   = 90
 
 # Should we auto remove DBs if we no longer have access.
 # Careful:  Could lose data if you accidentally lose connection.
-# Databases can be removed manually at: https://bigquery.cloud.google.com/queries/gsc-logger 
+# Databases can be removed manually at: https://bigquery.cloud.google.com/queries/gsc-logger
 AUTO_REMOVE = False
 
 # Schema used to build the tables.  If you change the data pulled from GSC, you must change this.
@@ -24,8 +28,8 @@ TABLE_SCHEMA = [
                     {"type": "STRING", "name": "page"},
                     {"type": "STRING", "name": "device"},
                     {"type": "INTEGER", "name": "clicks"},
-                    {"type": "INTEGER", "name": "impressions"}, 
-                    {"type": "FLOAT", "name": "ctr"}, 
+                    {"type": "INTEGER", "name": "impressions"},
+                    {"type": "FLOAT", "name": "ctr"},
                     {"type": "FLOAT", "name": "position"}
                 ]
 
@@ -42,7 +46,7 @@ ALLOW_OPEN_CRON = True
 HIDE_HOMEPAGE = False
 
 # Set Timezone ('US/Eastern', 'US/Central', 'US/Pacific')
-GSC_TIMEZONE = 'US/Eastern'
+GSC_TIMEZONE = 'UTC'
 
 # Base query for GSC.  startDate and endDate are replaced upon call.
 GSC_QUERY = {
@@ -54,16 +58,5 @@ GSC_QUERY = {
                   "page",
                   "device"
                  ],
-                 "dimensionFilterGroups": [
-                  {
-                   "filters": [
-                    {
-                     "dimension": "country",
-                     "expression": "usa"
-                    }
-                   ]
-                  }
-                 ],
                  "rowLimit": 5000
-                }
-
+            }
