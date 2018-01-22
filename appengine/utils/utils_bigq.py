@@ -3,6 +3,9 @@
 import json
 import uuid
 import re, string
+import pytz
+from datetime import datetime, timedelta
+
 
 import googleapiclient.discovery as discovery
 from googleapiclient.errors import HttpError
@@ -16,6 +19,10 @@ svcdata = ServiceData()
 import logging
 log = logging.getLogger(__name__)
 
+
+# Returns the partition format date based on OFFSET_DATE specified in config.py
+def get_offset_date():
+    return (datetime.now(pytz.timezone(cfg.GSC_TIMEZONE)) - timedelta(days=cfg.OFFSET_DATE)).strftime("%Y%m%d")
 
 # Gets the BigQuery Service   
 def get_bq_service():
@@ -80,6 +87,9 @@ def create_table(table,name):
             'tableId': table,
             'projectId': svcdata['project_id'],
             'datasetId': cfg.DATASET_ID
+        },
+        'timePartitioning': {
+            'type': 'DAY'
         }
     }
         
@@ -170,11 +180,12 @@ def stream_row_to_bigquery(site, rows):
     insert_all_data = {
         'rows': transform_rows(rows)
     }
+    partition_date = get_offset_date()
     service = get_bq_service()
     result =  service.tabledata().insertAll(
         projectId=svcdata['project_id'],
         datasetId=cfg.DATASET_ID,
-        tableId=convert_table_id(site),
+        tableId=convert_table_id(site)+ '$' + partition_date,
         body=insert_all_data).execute(num_retries=cfg.STREAM_RETRIES)
         
     log.info(json.dumps(result))
