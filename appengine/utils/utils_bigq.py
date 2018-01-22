@@ -100,14 +100,14 @@ def create_table(table,name):
         return False
 
 # Deletes a BiqQuery table
-def deleteTable(table):
+def deleteTable(tableId):
     try:
         service = get_bq_service()
         result =  service.tables().delete(projectId=svcdata['project_id'], datasetId=cfg.DATASET_ID, tableId=tableId).execute()
         return result
     except HttpError as e:
         log.error(('Cannot delete table {0}.{1}\n'
-                      'Http Error: {2}').format(cfg.DATASET_ID, table, e.content))
+                      'Http Error: {2}').format(cfg.DATASET_ID, tableId, e.content))
         return False
     
 # Returns list of all tables created in BiqQuery   
