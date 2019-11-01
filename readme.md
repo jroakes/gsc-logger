@@ -53,7 +53,7 @@ GitHub.
 1. Go to https://console.cloud.google.com/projectselector/iam-admin/serviceaccounts and create a Service Account in your project.
 2. Download the json file.
 3. Upload replacing the file in the `credentials` directory.
-
+4. Make sure the Service Account is allowed to access Google Search Console resources (https://search.google.com/u/1/search-console/users?resource_id={your_website}), use 'Add User' button and email address provided by Google under Service Accounts section
 
 ### 4. Deploy to App Engine
 
